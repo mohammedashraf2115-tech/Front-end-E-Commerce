@@ -1,0 +1,175 @@
+<div class="luxury-cart-wrapper py-5">
+  <div class="container-xl">
+    
+    <div class="d-flex align-items-baseline justify-content-between mb-4 pb-3 border-bottom">
+      <div>
+        <div class="luxury-eyebrow mb-1">Maison Bag</div>
+        <h1 class="display-6 font-serif mb-0">Your Selected Creations</h1>
+      </div>
+      @if(cartData && cartData.items.length > 0){
+        <span class="text-muted small">{{ cartData.items.length }} Editions in Bag</span>
+      }
+    </div>
+
+    @if(loading){
+      <div class="text-center py-5">
+        <div class="spinner-border text-dark" role="status"></div>
+        <p class="text-muted small mt-2">Loading your bag...</p>
+      </div>
+    } @else if(!cartData || cartData.items.length === 0){
+      <div class="empty-cart-card text-center p-5 my-4">
+        <i class="fa-solid fa-bag-shopping fs-1 text-muted mb-3" style="opacity: 0.4;"></i>
+        <h3 class="font-serif">Your Bag is Empty</h3>
+        <p class="text-muted small mb-4">No handcrafted pieces have been added yet.</p>
+        <a routerLink="/products" class="btn-luxury-dark py-3 px-4">
+          Discover The Collection
+        </a>
+      </div>
+    } @else {
+      
+      @if(cartData.hasPriceChanged){
+        <div class="price-update-alert p-3 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-circle-info text-gold-accent fs-5"></i>
+            <span class="small">Some artisan pieces in your bag have had price adjustments since you added them.</span>
+          </div>
+          <button class="btn-luxury-dark py-1 px-3" style="font-size: 0.75rem;" (click)="acceptPrices()">
+            Accept Updated Prices
+          </button>
+        </div>
+      }
+
+      <div class="row g-5">
+        
+        <!-- Items Manifest (Col 8) -->
+        <div class="col-lg-8">
+          <div class="bag-items-list d-flex flex-column gap-3">
+            @for(item of cartData.items; track item.product._id){
+              <div class="bag-item-card p-4">
+                <div class="row align-items-center g-4">
+                  
+                  <!-- Thumbnail -->
+                  <div class="col-3 col-sm-2">
+                    <div class="bag-item-thumb p-2">
+                      <img 
+                        [src]="productService.getImageUrl(item.product.image)" 
+                        [alt]="item.product.title" 
+                        class="img-fluid bag-item-img">
+                    </div>
+                  </div>
+
+                  <!-- Details -->
+                  <div class="col-9 col-sm-5">
+                    <div class="luxury-caption mb-1" style="font-size: 0.65rem;">
+                      {{ item.product.categoryId?.name }}
+                    </div>
+                    <h5 class="bag-item-title mb-1">
+                      <a [routerLink]="['/products', item.product.slug]" class="title-link">
+                        {{ item.product.title }}
+                      </a>
+                    </h5>
+
+                    @if(item.isPriceChanged){
+                      <div class="d-flex align-items-center gap-2 small">
+                        <span class="text-decoration-line-through text-muted">{{ item.priceAtAdd }} EGP</span>
+                        <span class="badge-luxury-gold badge-luxury-tag">{{ item.currentPrice }} EGP (Updated)</span>
+                      </div>
+                    } @else {
+                      <div class="small text-muted">{{ item.currentPrice }} EGP each</div>
+                    }
+                  </div>
+
+                  <!-- Stepper -->
+                  <div class="col-6 col-sm-3">
+                    <div class="luxury-stepper py-1 px-1">
+                      <button 
+                        type="button" 
+                        class="luxury-stepper-btn" 
+                        (click)="updateQty(item.product._id, item.quantity - 1)" 
+                        [disabled]="item.quantity <= 1 || updating">
+                        &minus;
+                      </button>
+
+                      <span class="luxury-stepper-count">
+                        {{ item.quantity }}
+                      </span>
+
+                      <button 
+                        type="button" 
+                        class="luxury-stepper-btn" 
+                        (click)="updateQty(item.product._id, item.quantity + 1)" 
+                        [disabled]="item.quantity >= item.product.stock || updating">
+                        &#43;
+                      </button>
+                    </div>
+
+                    @if(item.quantity >= item.product.stock){
+                      <div class="text-danger small mt-1" style="font-size: 10px;">
+                        Max stock ({{ item.product.stock }})
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Subtotal & Remove -->
+                  <div class="col-6 col-sm-2 text-end">
+                    <div class="bag-item-total mb-2">{{ item.itemTotal }} <small class="text-muted" style="font-size: 11px;">EGP</small></div>
+                    <button class="bag-remove-link" (click)="removeItem(item.product._id)" [disabled]="updating">
+                      Remove
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Order Summary Card (Col 4) -->
+        <div class="col-lg-4">
+          <div class="luxury-summary-card p-4 p-md-5 sticky-top" style="top: 100px;">
+            <h4 class="font-serif mb-4">Summary</h4>
+
+            <div class="d-flex justify-content-between mb-3 text-secondary small">
+              <span>Creations:</span>
+              <span class="fw-bold text-dark">{{ cartData.items.length }} items</span>
+            </div>
+
+            <div class="d-flex justify-content-between mb-3 text-secondary small">
+              <span>Delivery Service:</span>
+              <span class="text-gold-accent fw-bold">Complimentary (COD)</span>
+            </div>
+
+            <div class="d-flex justify-content-between mb-3 text-secondary small">
+              <span>Payment Option:</span>
+              <span class="fw-bold text-dark">Cash on Delivery</span>
+            </div>
+
+            <div class="my-4 border-top"></div>
+
+            <div class="d-flex justify-content-between align-items-baseline mb-4">
+              <span class="font-serif fs-4">Estimated Total:</span>
+              <span class="fs-4 fw-bold text-dark">{{ cartData.totalPrice }} <small class="fs-6 text-muted">EGP</small></span>
+            </div>
+
+            <button 
+              class="btn-luxury-dark w-100 py-3 mb-3" 
+              (click)="proceedToCheckout()"
+              [disabled]="updating">
+              Proceed to Atelier Checkout &rarr;
+            </button>
+
+            <div class="text-center">
+              <span class="small text-muted" style="font-size: 11px;">
+                <i class="fa-solid fa-lock me-1"></i> Cash on Delivery &bull; Safe Doorstep Inspection
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+</div>

@@ -1,0 +1,113 @@
+<div class="luxury-product-card h-100 d-flex flex-column">
+  
+  <!-- Product Image Container -->
+  <div class="product-visual-stage position-relative">
+    
+    <!-- Status Badges -->
+    <div class="badge-overlay position-absolute top-0 start-0 m-3 d-flex flex-column gap-1">
+      @if(product.stock === 0){
+        <span class="badge-luxury-soldout badge-luxury-tag">Sold Out</span>
+      } @else if(product.stock > 0 && product.stock <= 3){
+        <span class="badge-luxury-gold badge-luxury-tag">Only {{ product.stock }} Left</span>
+      }
+    </div>
+
+    <!-- Clickable Product Image -->
+    <a [routerLink]="['/products', product.slug]" class="product-image-link d-block">
+      <div class="product-img-frame">
+        <img 
+          [src]="productService.getImageUrl(product.image)" 
+          [alt]="product.title" 
+          class="luxury-product-img"
+          loading="lazy">
+      </div>
+    </a>
+  </div>
+
+  <!-- Card Body / Editorial Details -->
+  <div class="product-info-block d-flex flex-column flex-grow-1 p-3">
+    
+    <!-- Category Eyebrow -->
+    <div class="luxury-caption mb-1">
+      {{ product.categoryId?.name || 'Artisan Collection' }}
+    </div>
+
+    <!-- Product Title -->
+    <h3 class="product-card-title mb-2">
+      <a [routerLink]="['/products', product.slug]" class="title-link">
+        {{ product.title }}
+      </a>
+    </h3>
+
+    <!-- Price & Interactive Action -->
+    <div class="mt-auto pt-3 border-top-subtle">
+      <div class="d-flex align-items-baseline justify-content-between mb-3">
+        <div class="price-wrapper">
+          <span class="price-amount">{{ product.price }}</span>
+          <span class="price-currency">EGP</span>
+        </div>
+
+        @if(quantityInCart > 0){
+          <span class="in-bag-indicator">
+            <i class="fa-solid fa-check me-1"></i> In Bag
+          </span>
+        }
+      </div>
+
+      <!-- Action Area: Add or Stepper -->
+      <div class="card-action-container">
+        @if(product.stock === 0){
+          <button type="button" class="btn-luxury-outline w-100 py-2 disabled" disabled style="opacity: 0.5;">
+            Sold Out
+          </button>
+        } @else if(quantityInCart === 0){
+          <button 
+            type="button" 
+            class="btn-luxury-dark w-100 py-2"
+            [disabled]="loading"
+            (click)="increment($event)">
+            @if(loading){
+              <span class="spinner-border spinner-border-sm me-1"></span> Updating...
+            } @else {
+              <i class="fa-solid fa-plus me-1" style="font-size: 0.75rem;"></i> Add to Bag
+            }
+          </button>
+        } @else {
+          <!-- Luxury Stepper Capsule -->
+          <div class="luxury-stepper w-100 py-1" (click)="$event.stopPropagation()">
+            <button 
+              type="button" 
+              class="luxury-stepper-btn" 
+              [disabled]="loading"
+              (click)="decrement($event)"
+              title="Decrease quantity">
+              &minus;
+            </button>
+
+            <span class="luxury-stepper-count">
+              {{ quantityInCart }} in bag
+            </span>
+
+            <button 
+              type="button" 
+              class="luxury-stepper-btn" 
+              [disabled]="loading || quantityInCart >= product.stock"
+              (click)="increment($event)"
+              title="Increase quantity">
+              &#43;
+            </button>
+          </div>
+
+          @if(quantityInCart >= product.stock){
+            <div class="stock-limit-notice text-center mt-1">
+              Max available stock ({{ product.stock }})
+            </div>
+          }
+        }
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

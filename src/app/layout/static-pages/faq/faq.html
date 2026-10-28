@@ -1,0 +1,36 @@
+<div class="luxury-faq-wrapper py-5">
+  <div class="container-xl">
+    
+    <div class="text-center mb-5">
+      <div class="luxury-eyebrow mb-2">Maison Concierge</div>
+      <h1 class="display-5 font-serif mb-3">Client Care & FAQ</h1>
+      <p class="text-muted mx-auto" style="max-width: 540px;">
+        Everything you need to know about our vegetable-tanned hides, doorstep Cash on Delivery, and lifetime craftsmanship guarantee.
+      </p>
+    </div>
+
+    @if(loading){
+      <div class="text-center py-5">
+        <div class="spinner-border text-dark" role="status"></div>
+      </div>
+    } @else {
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="d-flex flex-column gap-3">
+            @for(item of faqs; track item._id; let i = $index){
+              <div class="luxury-card p-4">
+                <h5 class="font-serif mb-2 fs-5">
+                  <i class="fa-solid fa-circle-question text-gold-accent me-2"></i> {{ item.question }}
+                </h5>
+                <p class="text-muted mb-0 small" style="line-height: 1.7;">
+                  {{ item.answer }}
+                </p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,175 @@
+<div class="luxury-home-wrapper">
+
+  <!-- Editorial Hero Section -->
+  <section class="luxury-hero position-relative">
+    <div class="container-xl py-5">
+      <div class="row align-items-center g-5 py-lg-4">
+        
+        <!-- Left Content -->
+        <div class="col-lg-7">
+          <div class="hero-badge luxury-eyebrow mb-3">
+            <span class="badge-dot"></span> Maison Leather Goods &bull; Spring 2026
+          </div>
+          
+          <h1 class="hero-headline display-3 mb-4">
+            Timeless Luxury, <br>
+            <span class="headline-serif-italic">Handcrafted</span> for Discerning Journeys.
+          </h1>
+          
+          <p class="hero-subtext mb-5">
+            Discover our curated archive of briefcases, travel backpacks, and executive messengers. 
+            Individually tailored in full-grain artisan leather with complimentary Cash on Delivery across Egypt.
+          </p>
+
+          <div class="d-flex flex-wrap align-items-center gap-3">
+            <a routerLink="/products" class="btn-luxury-dark py-3 px-4">
+              Explore Collection <i class="fa-solid fa-arrow-right-long ms-2"></i>
+            </a>
+            <a routerLink="/faq" class="btn-luxury-outline py-3 px-4">
+              Our Craft & Story
+            </a>
+          </div>
+
+          <!-- Quick Trust Metrics -->
+          <div class="hero-trust-row d-flex align-items-center gap-4 mt-5 pt-4 border-top">
+            <div>
+              <div class="trust-stat">100%</div>
+              <div class="trust-label">Full-Grain Leather</div>
+            </div>
+            <div class="trust-divider"></div>
+            <div>
+              <div class="trust-stat">COD</div>
+              <div class="trust-label">Pay Upon Delivery</div>
+            </div>
+            <div class="trust-divider"></div>
+            <div>
+              <div class="trust-stat">Lifetime</div>
+              <div class="trust-label">Stitch Guarantee</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Hero Visual Collage -->
+        <div class="col-lg-5">
+          <div class="hero-showcase-frame position-relative">
+            <div class="hero-image-backdrop"></div>
+            <div class="hero-card-featured">
+              <span class="hero-tag">Signature Edition</span>
+              <h4 class="font-serif mt-2 mb-1">Artisan Messenger No. 01</h4>
+              <p class="small text-muted mb-3">Vegetable-tanned finish &bull; Matte black hardware</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fs-5 fw-bold text-dark">1,450 EGP</span>
+                <a routerLink="/products" class="btn-luxury-dark py-1 px-3" style="font-size: 0.75rem;">
+                  Discover
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Curated Category Pillars -->
+  <section class="category-pillars-section py-5">
+    <div class="container-xl">
+      <div class="text-center mb-5">
+        <div class="luxury-caption mb-2">Curated Categories</div>
+        <h2 class="display-6 font-serif">Engineered for Distinct Occasions</h2>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="category-pillar-card p-4">
+            <div class="pillar-number">01</div>
+            <h4 class="font-serif mt-3 mb-2">Briefcases & Laptop Bags</h4>
+            <p class="text-muted small mb-4">Structured architectural silhouettes engineered for modern boardrooms and executive devices.</p>
+            <a [routerLink]="['/products']" [queryParams]="{category: 'briefcases'}" class="category-pillar-link">
+              Explore Briefcases &rarr;
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="category-pillar-card p-4">
+            <div class="pillar-number">02</div>
+            <h4 class="font-serif mt-3 mb-2">Backpacks & Travel</h4>
+            <p class="text-muted small mb-4">Ergonomic daily carry daypacks balanced with weather-resistant finishes for seamless transit.</p>
+            <a [routerLink]="['/products']" [queryParams]="{category: 'backpacks'}" class="category-pillar-link">
+              Explore Travel &rarr;
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="category-pillar-card p-4">
+            <div class="pillar-number">03</div>
+            <h4 class="font-serif mt-3 mb-2">Crossbody & Messengers</h4>
+            <p class="text-muted small mb-4">Effortless hands-free versatility hand-stitched for city commuting and international travel.</p>
+            <a [routerLink]="['/products']" [queryParams]="{category: 'messengers'}" class="category-pillar-link">
+              Explore Messengers &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <section class="featured-products-section py-5">
+    <div class="container-xl">
+      
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-5">
+        <div>
+          <div class="luxury-caption mb-2">The Permanent Collection</div>
+          <h2 class="display-5 font-serif mb-0">Handcrafted Masterpieces</h2>
+        </div>
+        <a routerLink="/products" class="btn-luxury-outline mt-3 mt-md-0">
+          View All Editions ({{ featuredProducts.length }})
+        </a>
+      </div>
+
+      @if(loading){
+        <div class="text-center py-5">
+          <div class="spinner-border text-dark" role="status"></div>
+          <div class="text-muted small mt-2">Loading atelier archive...</div>
+        </div>
+      } @else {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+          @for(prod of featuredProducts; track prod._id){
+            <div class="col">
+              <app-product-card [product]="prod"></app-product-card>
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+  </section>
+
+  <!-- Maison Craftsmanship Banner -->
+  <section class="craft-philosophy-section my-5">
+    <div class="container-xl">
+      <div class="craft-banner-inner p-5 text-center text-md-start">
+        <div class="row align-items-center g-4">
+          <div class="col-md-8">
+            <span class="luxury-eyebrow text-gold-accent">Artisanal Ethos</span>
+            <h2 class="display-6 font-serif text-white mt-2 mb-3">
+              Vegetable-Tanned Leather, Burnished by Egyptian Craftsmen
+            </h2>
+            <p class="text-stone-muted mb-0" style="max-width: 600px;">
+              Every bag is inspected with obsessive attention to grain consistency, reinforced stress rivets, and smooth-gliding brass zippers. Built not for seasons, but for decades.
+            </p>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <a routerLink="/products" class="btn-luxury-gold py-3 px-4">
+              Shop The Craft
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

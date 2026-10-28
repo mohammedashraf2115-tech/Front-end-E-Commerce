@@ -1,0 +1,73 @@
+<!-- Top Luxury Announcement Banner -->
+<div class="luxury-announcement">
+  <span>Handcrafted Artisan Leather Goods &bull; Cash on Delivery Across Egypt &bull; 100% Genuine Full-Grain Leather</span>
+</div>
+
+<!-- Main Sticky Luxury Navigation Bar -->
+<header class="luxury-navbar sticky-top">
+  <div class="container-xl d-flex align-items-center justify-content-between py-3">
+    
+    <!-- Brand Mark (Serif Boutique Logo) -->
+    <a routerLink="/" class="luxury-brand-mark text-decoration-none">
+      <div class="luxury-brand-title">L'ATELIER</div>
+      <div class="luxury-brand-sub">FINE LEATHER MAISON &bull; CAIRO</div>
+    </a>
+
+    <!-- Center Navigation Links -->
+    <nav class="d-none d-lg-flex align-items-center gap-4">
+      <a routerLink="/home" class="luxury-nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      <a routerLink="/products" class="luxury-nav-link" routerLinkActive="active">Collection</a>
+      <a [routerLink]="['/products']" [queryParams]="{category: 'briefcases'}" class="luxury-nav-link">Briefcases</a>
+      <a [routerLink]="['/products']" [queryParams]="{category: 'backpacks'}" class="luxury-nav-link">Travel & Backpacks</a>
+      <a [routerLink]="['/products']" [queryParams]="{category: 'messengers'}" class="luxury-nav-link">Messengers</a>
+      <a routerLink="/faq" class="luxury-nav-link" routerLinkActive="active">Atelier Care & FAQ</a>
+    </nav>
+
+    <!-- Right Utility Actions -->
+    <div class="d-flex align-items-center gap-3">
+      
+      <!-- Minimalist Search Form -->
+      <form (ngSubmit)="onSearch()" class="d-none d-md-flex align-items-center position-relative">
+        <input 
+          type="text" 
+          class="luxury-search-input" 
+          placeholder="Search artisan editions..." 
+          [(ngModel)]="searchQuery" 
+          name="searchQuery">
+        <button type="submit" class="luxury-search-btn" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+
+      <!-- Auth State Menu -->
+      @if((authService.currentUser$ | async); as user){
+        <div class="d-flex align-items-center gap-2">
+          @if(user.role === 'admin'){
+            <a routerLink="/dashboard" class="luxury-action-btn admin-pill" title="Maison Dashboard">
+              <i class="fa-solid fa-chart-pie me-1"></i> Dashboard
+            </a>
+          }
+          <a routerLink="/profile" class="luxury-action-btn" title="Client Profile">
+            <i class="fa-regular fa-user me-1"></i> {{ user.name.split(' ')[0] }}
+          </a>
+          <button type="button" class="luxury-logout-btn" (click)="logout()" title="Sign Out">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+      } @else {
+        <div class="d-flex align-items-center gap-2">
+          <a routerLink="/login" class="luxury-nav-link text-uppercase" style="font-size: 0.8rem; font-weight: 600;">Sign In</a>
+          <a routerLink="/signup" class="btn-luxury-dark py-1 px-3" style="font-size: 0.75rem;">Join</a>
+        </div>
+      }
+
+      <!-- Cart / Bag Pill Counter -->
+      <a routerLink="/cart" class="luxury-bag-pill" title="Shopping Bag">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="luxury-bag-label">Bag</span>
+        <span class="luxury-bag-count">{{ (cartService.cartCount$ | async) || 0 }}</span>
+      </a>
+
+    </div>
+  </div>
+</header>

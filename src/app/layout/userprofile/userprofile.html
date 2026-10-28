@@ -1,0 +1,217 @@
+<div class="luxury-profile-wrapper py-5">
+  <div class="container-xl">
+    
+    <div class="mb-5 pb-3 border-bottom">
+      <div class="luxury-eyebrow mb-1">Client Sanctuary</div>
+      <h1 class="display-6 font-serif mb-0">Maison Profile & Orders</h1>
+    </div>
+
+    @if(loadingUser){
+      <div class="text-center py-5">
+        <div class="spinner-border text-dark" role="status"></div>
+        <p class="text-muted small mt-2">Accessing client records...</p>
+      </div>
+    } @else if(user){
+      
+      @if(orderSuccessId){
+        <div class="alert alert-success d-flex align-items-center justify-content-between mb-4 p-3 rounded-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-circle-check fs-5 text-success"></i>
+            <div>
+              <strong>Order Confirmed!</strong> Your acquisition #{{ orderSuccessId.slice(-6) }} has been dispatched to our workshop.
+            </div>
+          </div>
+          <button type="button" class="btn-close" (click)="orderSuccessId = null"></button>
+        </div>
+      }
+
+      <div class="row g-5">
+        
+        <!-- Sidebar Navigation (Col 3) -->
+        <div class="col-md-3">
+          <div class="luxury-profile-nav d-flex flex-column gap-2 p-3">
+            <button 
+              type="button" 
+              class="profile-nav-btn" 
+              [class.active]="activeTab === 'profile'"
+              (click)="activeTab = 'profile'">
+              <i class="fa-regular fa-user me-2"></i> Account Details
+            </button>
+            <button 
+              type="button" 
+              class="profile-nav-btn" 
+              [class.active]="activeTab === 'addresses'"
+              (click)="activeTab = 'addresses'">
+              <i class="fa-solid fa-location-dot me-2"></i> Destinations ({{ user.addresses?.length || 0 }})
+            </button>
+            <button 
+              type="button" 
+              class="profile-nav-btn" 
+              [class.active]="activeTab === 'orders'"
+              (click)="activeTab = 'orders'; loadOrders()">
+              <i class="fa-solid fa-box-archive me-2"></i> Order Archive
+            </button>
+          </div>
+        </div>
+
+        <!-- Content Area (Col 9) -->
+        <div class="col-md-9">
+          
+          <!-- Tab 1: Profile Details -->
+          @if(activeTab === 'profile'){
+            <div class="luxury-card p-4 p-md-5">
+              <h4 class="font-serif mb-4">Client Credentials</h4>
+              
+              @if(profileMsg){
+                <div class="alert alert-success py-2 px-3 small mb-4">{{ profileMsg }}</div>
+              }
+
+              <div class="mb-3">
+                <label class="luxury-caption mb-1 d-block">Full Legal Name</label>
+                <input type="text" class="form-control-luxury w-100" [(ngModel)]="editName">
+              </div>
+
+              <div class="mb-3">
+                <label class="luxury-caption mb-1 d-block">Primary Email (Registered)</label>
+                <input type="email" class="form-control-luxury w-100 bg-light" [value]="user.email" disabled style="opacity: 0.7;">
+              </div>
+
+              <div class="mb-4">
+                <label class="luxury-caption mb-1 d-block">Primary Phone (Courier Contact)</label>
+                <input type="tel" class="form-control-luxury w-100" [(ngModel)]="editMobile">
+              </div>
+
+              <button class="btn-luxury-dark py-2 px-4" (click)="updateProfile()">
+                Update Credentials
+              </button>
+            </div>
+          }
+
+          <!-- Tab 2: Addresses -->
+          @if(activeTab === 'addresses'){
+            <div class="luxury-card p-4 p-md-5">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="font-serif mb-0">Delivery Destinations</h4>
+                <button class="btn-luxury-outline py-1 px-3" style="font-size: 0.75rem;" (click)="showAddAddressModal = !showAddAddressModal">
+                  {{ showAddAddressModal ? 'Close Form' : '+ Add Destination' }}
+                </button>
+              </div>
+
+              @if(showAddAddressModal){
+                <div class="new-dest-panel p-4 mb-4">
+                  <div class="luxury-caption mb-3">Add Destination Address</div>
+                  <div class="mb-3">
+                    <label class="small text-muted mb-1" style="font-size: 11px;">DESTINATION LABEL</label>
+                    <input type="text" class="form-control-luxury w-100" [(ngModel)]="newAddress.title" placeholder="Home, Villa, Office">
+                  </div>
+                  <div class="mb-3">
+                    <label class="small text-muted mb-1" style="font-size: 11px;">STREET & PREMISES</label>
+                    <input type="text" class="form-control-luxury w-100" [(ngModel)]="newAddress.street" placeholder="e.g. 24 Al-Gezira St, Zamalek">
+                  </div>
+                  <div class="mb-3">
+                    <label class="small text-muted mb-1" style="font-size: 11px;">CITY</label>
+                    <select class="form-select-luxury w-100" [(ngModel)]="newAddress.city">
+                      <option value="Cairo">Cairo</option>
+                      <option value="Giza">Giza</option>
+                      <option value="Alexandria">Alexandria</option>
+                    </select>
+                  </div>
+                  <button class="btn-luxury-dark py-2 px-4" (click)="saveNewAddress()">Save Destination</button>
+                </div>
+              }
+
+              @if(!user.addresses || user.addresses.length === 0){
+                <p class="text-muted small">No saved destinations in your portfolio.</p>
+              } @else {
+                <div class="row g-3">
+                  @for(addr of user.addresses; track addr._id){
+                    <div class="col-md-6">
+                      <div class="destination-card p-3 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold text-dark">{{ addr.title }}</span>
+                            @if(addr.isDefault){
+                              <span class="badge-luxury-tag badge-luxury-gold" style="font-size: 10px;">Primary</span>
+                            }
+                          </div>
+                          <div class="text-muted small mb-3">{{ addr.street }}, {{ addr.city }}</div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                          @if(!addr.isDefault){
+                            <button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 11px;" (click)="setDefaultAddress(addr._id!)">Set Primary</button>
+                          }
+                          <button class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 11px;" (click)="deleteAddress(addr._id!)">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+            </div>
+          }
+
+          <!-- Tab 3: Orders Archive -->
+          @if(activeTab === 'orders'){
+            <div class="luxury-card p-4 p-md-5">
+              <h4 class="font-serif mb-4">Acquisition Archive</h4>
+
+              @if(loadingOrders){
+                <div class="text-center py-4">
+                  <div class="spinner-border text-dark" role="status"></div>
+                </div>
+              } @else if(orders.length === 0){
+                <div class="text-center py-4">
+                  <i class="fa-solid fa-box-open fs-2 text-muted mb-2"></i>
+                  <p class="text-muted small">No acquisitions found in your client archive.</p>
+                </div>
+              } @else {
+                <div class="d-flex flex-column gap-3">
+                  @for(order of orders; track order._id){
+                    <div class="order-archive-item p-4">
+                      <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 mb-3 border-bottom">
+                        <div>
+                          <span class="luxury-caption">Acquisition #{{ order._id.slice(-8).toUpperCase() }}</span>
+                          <div class="small text-muted">{{ order.createdAt | date:'mediumDate' }}</div>
+                        </div>
+                        <div class="text-end">
+                          <span class="badge-luxury-tag" [ngClass]="{
+                            'badge-luxury-gold': order.status === 'pending' || order.status === 'preparing',
+                            'badge-luxury-soldout': order.status === 'delivered' || order.status === 'received',
+                            'bg-danger text-white': order.status.includes('cancelled') || order.status === 'rejected'
+                          }">
+                            {{ order.status | uppercase }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="order-items-mini mb-3">
+                        @for(item of order.orderItems; track item.productId){
+                          <div class="d-flex justify-content-between align-items-center small py-1">
+                            <span class="text-dark">{{ item.quantity }}x {{ item.title }}</span>
+                            <span class="fw-bold">{{ item.price * item.quantity }} EGP</span>
+                          </div>
+                        }
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="small text-muted">Cash on Delivery Total:</span>
+                        <span class="fw-bold text-dark fs-5">{{ order.totalPrice }} EGP</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+            </div>
+          }
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+</div>

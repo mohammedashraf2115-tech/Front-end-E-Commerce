@@ -1,0 +1,287 @@
+/* ==========================================================================
+   L'ATELIER LUXURY E-COMMERCE DESIGN SYSTEM
+   Inspired by High-End Boutique Editorial Aesthetics (Perfume & Leather Maison)
+   ========================================================================== */
+
+:root {
+  --bg-primary: #FAF9F5;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F3EFE6;
+  --bg-contrast: #121212;
+  --bg-dark-surface: #1C1B19;
+
+  --text-primary: #151413;
+  --text-secondary: #57534E;
+  --text-muted: #8E887E;
+  --text-light: #F9F8F6;
+
+  --accent-gold: #B89758;
+  --accent-gold-dark: #9A7B42;
+  --accent-gold-light: #F4EEDF;
+
+  --border-subtle: #E8E3D8;
+  --border-medium: #D1CAC0;
+  --border-focus: #121212;
+
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --transition-smooth: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 12px 36px rgba(0, 0, 0, 0.07);
+}
+
+/* Base resets & typography */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body.luxury-body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, .font-serif, .serif-heading {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+p, span, a, button, input, select, textarea, label {
+  font-family: var(--font-sans);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+/* Editorial Uppercase Tracked Labels */
+.luxury-caption {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--accent-gold-dark);
+}
+
+.luxury-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Luxury Buttons */
+.btn-luxury-dark {
+  background-color: var(--bg-contrast);
+  color: #FFFFFF;
+  border: 1px solid var(--bg-contrast);
+  padding: 0.65rem 1.6rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 40px;
+  transition: var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-luxury-dark:hover:not(:disabled) {
+  background-color: var(--accent-gold-dark);
+  border-color: var(--accent-gold-dark);
+  color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(184, 151, 88, 0.35);
+}
+
+.btn-luxury-dark:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-luxury-outline {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+  padding: 0.65rem 1.6rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 40px;
+  transition: var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-luxury-outline:hover:not(:disabled) {
+  background-color: var(--bg-contrast);
+  border-color: var(--bg-contrast);
+  color: #FFFFFF;
+}
+
+.btn-luxury-gold {
+  background-color: var(--accent-gold);
+  color: #FFFFFF;
+  border: 1px solid var(--accent-gold);
+  padding: 0.65rem 1.6rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 40px;
+  transition: var(--transition-smooth);
+}
+
+.btn-luxury-gold:hover:not(:disabled) {
+  background-color: var(--accent-gold-dark);
+  border-color: var(--accent-gold-dark);
+  color: #FFFFFF;
+}
+
+/* Stepper Pill Button (Interactive Quantity Capsule) */
+.luxury-stepper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 40px;
+  padding: 3px 6px;
+  box-shadow: var(--shadow-subtle);
+  transition: var(--transition-smooth);
+}
+
+.luxury-stepper:hover {
+  border-color: var(--accent-gold);
+}
+
+.luxury-stepper-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.luxury-stepper-btn:hover:not(:disabled) {
+  background-color: var(--bg-contrast);
+  color: #FFFFFF;
+}
+
+.luxury-stepper-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.luxury-stepper-count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0 0.6rem;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Luxury Cards */
+.luxury-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-subtle);
+  overflow: hidden;
+}
+
+.luxury-card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Luxury Badges */
+.badge-luxury-tag {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 20px;
+  background-color: var(--bg-subtle);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.badge-luxury-gold {
+  background-color: var(--accent-gold-light);
+  color: var(--accent-gold-dark);
+  border: 1px solid rgba(184, 151, 88, 0.3);
+}
+
+.badge-luxury-soldout {
+  background-color: #27272A;
+  color: #E4E4E7;
+  border: 1px solid #3F3F46;
+}
+
+/* Form Controls with Minimalist Hairline */
+.form-control-luxury, .form-select-luxury {
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  background-color: #FFFFFF;
+  color: var(--text-primary);
+  transition: var(--transition-smooth);
+}
+
+.form-control-luxury:focus, .form-select-luxury:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(184, 151, 88, 0.15);
+}
+
+/* Luxury Top Announcement Banner */
+.luxury-announcement {
+  background-color: var(--bg-contrast);
+  color: #E5E0D5;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0.55rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}

@@ -1,0 +1,80 @@
+<div>
+  @if(loading){
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else if(stats){
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-xl-3">
+        <div class="card border p-3 bg-white">
+          <div class="text-muted small fw-semibold text-uppercase">Total Revenue</div>
+          <div class="fs-3 fw-bold text-success">{{ stats.overview.totalRevenue }} EGP</div>
+          <div class="small text-muted mt-1">From confirmed orders</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="card border p-3 bg-white">
+          <div class="text-muted small fw-semibold text-uppercase">Pending Orders</div>
+          <div class="fs-3 fw-bold text-warning">{{ stats.alerts.pendingOrdersCount }}</div>
+          <div class="small text-muted mt-1">Awaiting processing</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="card border p-3 bg-white">
+          <div class="text-muted small fw-semibold text-uppercase">Low Stock Alert</div>
+          <div class="fs-3 fw-bold text-danger">{{ stats.alerts.lowStockCount }}</div>
+          <div class="small text-muted mt-1">3 or fewer left</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="card border p-3 bg-white">
+          <div class="text-muted small fw-semibold text-uppercase">Out of Stock</div>
+          <div class="fs-3 fw-bold text-secondary">{{ stats.alerts.outOfStockCount }}</div>
+          <div class="small text-muted mt-1">0 quantity remaining</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border p-4">
+      <h5 class="fw-bold mb-3">Items Running Low (&le; 3 in stock)</h5>
+
+      @if(stats.alerts.lowStockProducts.length === 0){
+        <p class="text-muted small mb-0">All inventory levels are currently healthy!</p>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle mb-0">
+            <thead class="table-light small">
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Current Stock</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(prod of stats.alerts.lowStockProducts; track prod._id){
+                <tr>
+                  <td>
+                    <strong>{{ prod.title }}</strong>
+                  </td>
+                  <td>{{ prod.price }} EGP</td>
+                  <td class="fw-bold text-danger">{{ prod.stock }}</td>
+                  <td>
+                    @if(prod.stock === 0){
+                      <span class="badge bg-danger">Out of Stock</span>
+                    } @else {
+                      <span class="badge bg-warning text-dark">Low Stock</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</div>

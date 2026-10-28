@@ -1,0 +1,10 @@
+.luxury-dashboard-wrapper {
+  background-color: var(--bg-primary);
+  min-height: 85vh;
+}
+
+.btn-luxury-outline.active {
+  background-color: var(--bg-contrast);
+  color: #FFFFFF;
+  border-color: var(--bg-contrast);
+}

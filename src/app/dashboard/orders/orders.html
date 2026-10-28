@@ -1,0 +1,73 @@
+<div>
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+      <h4 class="fw-bold mb-0">Customer Orders</h4>
+      <small class="text-muted">Manage and update order fulfillment statuses</small>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+      <label class="small text-muted fw-semibold">Filter:</label>
+      <select class="form-select form-select-sm" [(ngModel)]="statusFilter" (change)="loadOrders()">
+        <option value="">All Statuses</option>
+        @for(st of allowedStatuses; track st){
+          <option [value]="st">{{ st }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if(loading){
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else if(orders.length === 0){
+    <div class="card border p-4 text-center">
+      <p class="text-muted mb-0">No orders found.</p>
+    </div>
+  } @else {
+    <div class="card border overflow-hidden">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light small">
+            <tr>
+              <th>Order ID</th>
+              <th>Customer Mobile</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Delivery Address</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(ord of orders; track ord._id){
+              <tr>
+                <td class="font-monospace small fw-bold">#{{ ord._id.slice(-6) }}</td>
+                <td>
+                  <div class="fw-bold">{{ ord.mobileSnapshot }}</div>
+                  <small class="text-muted">{{ ord.paymentMethod }}</small>
+                </td>
+                <td>
+                  <span class="badge bg-light text-dark border">{{ ord.orderItems.length }} item(s)</span>
+                </td>
+                <td class="fw-bold text-primary">{{ ord.totalPrice }} EGP</td>
+                <td class="small text-muted">
+                  {{ ord.addressSnapshot?.title }}: {{ ord.addressSnapshot?.street }}, {{ ord.addressSnapshot?.city }}
+                </td>
+                <td>
+                  <select 
+                    class="form-select form-select-sm" 
+                    [value]="ord.status" 
+                    (change)="updateStatus(ord._id, $event)">
+                    @for(st of allowedStatuses; track st){
+                      <option [value]="st">{{ st }}</option>
+                    }
+                  </select>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

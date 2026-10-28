@@ -1,0 +1,164 @@
+<div class="luxury-catalog-wrapper py-5">
+  <div class="container-xl">
+    
+    <!-- Editorial Catalog Header -->
+    <div class="catalog-header-panel p-4 p-md-5 mb-5">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="luxury-eyebrow mb-2">Maison Catalog &bull; Egypt Collection</div>
+          <h1 class="display-5 font-serif mb-2">The Leather Archive</h1>
+          <p class="text-muted mb-0" style="max-width: 580px;">
+            Meticulously engineered leather goods. Handcrafted with vegetable-tanned hides and solid brass hardware.
+          </p>
+        </div>
+        <div class="col-lg-5 text-lg-end">
+          <div class="catalog-metrics-pill d-inline-flex align-items-center gap-2">
+            <i class="fa-solid fa-sparkles text-gold-accent"></i>
+            <span class="fw-bold">{{ totalResults }}</span>
+            <span class="text-muted">curated pieces found</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Layout: Filters + Products Grid -->
+    <div class="row g-4 g-lg-5">
+      
+      <!-- Filter Sidebar (Col 3) -->
+      <aside class="col-lg-3">
+        <div class="luxury-filter-panel p-4 sticky-top" style="top: 100px; z-index: 10;">
+          <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+            <h5 class="font-serif mb-0 fs-4">Refine Archive</h5>
+            <button class="luxury-reset-link" (click)="resetFilters()">
+              Reset All
+            </button>
+          </div>
+
+          <!-- Category Filter -->
+          <div class="filter-group mb-4">
+            <label class="luxury-caption mb-3 d-block">Collection Category</label>
+            <div class="d-flex flex-column gap-2">
+              <label class="luxury-category-choice" [class.selected]="!selectedCategory">
+                <input type="radio" name="cat" [value]="''" [(ngModel)]="selectedCategory" (change)="applyFilters()" class="d-none">
+                <span>All Collections</span>
+              </label>
+
+              @for(cat of categories; track cat._id){
+                <label class="luxury-category-choice" [class.selected]="selectedCategory === cat._id">
+                  <input type="radio" name="cat" [value]="cat._id" [(ngModel)]="selectedCategory" (change)="applyFilters()" class="d-none">
+                  <span>{{ cat.name }}</span>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- Price Range Filter -->
+          <div class="filter-group mb-4 pt-3 border-top">
+            <label class="luxury-caption mb-3 d-block">Price Range (EGP)</label>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="small text-muted mb-1" style="font-size: 11px;">MINIMUM</label>
+                <input type="number" class="form-control-luxury w-100" [(ngModel)]="minPrice" placeholder="0">
+              </div>
+              <div class="col-6">
+                <label class="small text-muted mb-1" style="font-size: 11px;">MAXIMUM</label>
+                <input type="number" class="form-control-luxury w-100" [(ngModel)]="maxPrice" placeholder="3000">
+              </div>
+            </div>
+          </div>
+
+          <!-- Apply Filter Button -->
+          <div class="d-grid gap-2">
+            <button class="btn-luxury-dark py-2" (click)="applyFilters()">
+              Apply Filters
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- Products Grid & Controls (Col 9) -->
+      <main class="col-lg-9">
+        
+        <!-- Sorting Bar -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
+          <div class="small text-muted">
+            Displaying <strong class="text-dark">{{ products.length }}</strong> of {{ totalResults }} editions
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <label class="luxury-caption text-muted mb-0">Sort By:</label>
+            <select class="form-select-luxury py-1 px-3" style="font-size: 0.82rem;" [(ngModel)]="sortBy" (change)="loadProducts()">
+              <option value="createdAt">Newest First</option>
+              <option value="price">Price</option>
+              <option value="title">Alphabetical</option>
+            </select>
+            <button 
+              class="luxury-order-toggle" 
+              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc'); loadProducts()"
+              title="Toggle Ascending/Descending">
+              <i class="fa-solid" [ngClass]="sortOrder === 'asc' ? 'fa-arrow-up-wide-short' : 'fa-arrow-down-wide-short'"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Products State -->
+        @if(loading){
+          <div class="text-center py-5">
+            <div class="spinner-border text-dark" role="status"></div>
+            <p class="text-muted small mt-2">Retrieving catalog...</p>
+          </div>
+        } @else if(products.length === 0){
+          <div class="empty-archive-card text-center p-5">
+            <i class="fa-regular fa-folder-open fs-1 text-muted mb-3"></i>
+            <h4 class="font-serif">No Products Found in Archive</h4>
+            <p class="text-muted small mb-4">No artisan items match the current filter criteria.</p>
+            <button class="btn-luxury-dark" (click)="resetFilters()">Clear Filters</button>
+          </div>
+        } @else {
+          <!-- The Responsive 3-Column Luxury Product Grid -->
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4">
+            @for(prod of products; track prod._id){
+              <div class="col">
+                <app-product-card [product]="prod"></app-product-card>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Pagination -->
+        @if(totalPages > 1){
+          <div class="d-flex justify-content-center mt-5 pt-3">
+            <div class="luxury-pagination d-flex align-items-center gap-2">
+              <button 
+                class="luxury-page-btn" 
+                [disabled]="currentPage === 1"
+                (click)="changePage(currentPage - 1)">
+                &larr; Prev
+              </button>
+
+              @for(p of [].constructor(totalPages); track $index){
+                <button 
+                  class="luxury-page-number" 
+                  [class.active]="currentPage === ($index + 1)"
+                  (click)="changePage($index + 1)">
+                  {{ $index + 1 }}
+                </button>
+              }
+
+              <button 
+                class="luxury-page-btn" 
+                [disabled]="currentPage === totalPages"
+                (click)="changePage(currentPage + 1)">
+                Next &rarr;
+              </button>
+            </div>
+          </div>
+        }
+
+      </main>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,185 @@
+<div class="luxury-details-wrapper py-5">
+  <div class="container-xl">
+    
+    @if(product){
+      <!-- Breadcrumb Navigation -->
+      <nav class="luxury-breadcrumb mb-4">
+        <a routerLink="/home" class="breadcrumb-item-link">Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <a routerLink="/products" class="breadcrumb-item-link">Collection</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">{{ product.title }}</span>
+      </nav>
+
+      <!-- Main Showcase Grid (Image Left, Details Right) -->
+      <div class="row g-5 align-items-start mb-5">
+        
+        <!-- Left Column: Showcase Visual Stage -->
+        <div class="col-lg-6">
+          <div class="details-image-frame position-relative p-4 p-md-5">
+            <div class="badge-stage position-absolute top-0 start-0 m-4">
+              @if(product.stock === 0){
+                <span class="badge-luxury-soldout badge-luxury-tag">Sold Out</span>
+              } @else if(product.stock > 0 && product.stock <= 3){
+                <span class="badge-luxury-gold badge-luxury-tag">Only {{ product.stock }} Available</span>
+              } @else {
+                <span class="badge-luxury-tag" style="background: #FFFFFF;">Artisan Edition</span>
+              }
+            </div>
+
+            <img 
+              [src]="productService.getImageUrl(product.image)" 
+              [alt]="product.title" 
+              class="img-fluid details-product-image">
+          </div>
+
+          <!-- Trust Highlights Under Image -->
+          <div class="row g-3 mt-3 text-center">
+            <div class="col-4">
+              <div class="details-trust-mini p-3">
+                <i class="fa-solid fa-award text-gold-accent mb-2"></i>
+                <div class="small fw-bold">Full-Grain</div>
+                <div class="text-muted" style="font-size: 11px;">100% Genuine Leather</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="details-trust-mini p-3">
+                <i class="fa-solid fa-hand-holding-dollar text-gold-accent mb-2"></i>
+                <div class="small fw-bold">COD Available</div>
+                <div class="text-muted" style="font-size: 11px;">Pay Upon Delivery</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="details-trust-mini p-3">
+                <i class="fa-solid fa-shield-halved text-gold-accent mb-2"></i>
+                <div class="small fw-bold">Inspection</div>
+                <div class="text-muted" style="font-size: 11px;">Check Before Payment</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Editorial Specs & Purchasing -->
+        <div class="col-lg-6">
+          <div class="details-content-stage ps-lg-3">
+            
+            <div class="luxury-caption mb-2">
+              {{ product.categoryId?.name || 'Maison Leather Goods' }}
+            </div>
+
+            <h1 class="details-product-title mb-3">
+              {{ product.title }}
+            </h1>
+
+            <!-- Price -->
+            <div class="details-price-row d-flex align-items-baseline gap-2 mb-4 pb-3 border-bottom">
+              <span class="details-price-amount">{{ product.price }}</span>
+              <span class="details-price-unit">EGP</span>
+              <span class="details-vat-notice ms-2">&bull; Cash on Delivery included</span>
+            </div>
+
+            <!-- Description -->
+            <p class="details-description mb-4">
+              {{ product.description }}
+            </p>
+
+            <!-- Craftsmanship Specifications -->
+            <div class="craftsmanship-box p-4 mb-4">
+              <div class="luxury-eyebrow mb-3">Specifications & Craft</div>
+              <ul class="specs-list list-unstyled mb-0 d-flex flex-column gap-2">
+                <li><i class="fa-solid fa-check text-gold-accent me-2"></i><strong>Hide:</strong> Hand-curated vegetable-tanned full-grain leather</li>
+                <li><i class="fa-solid fa-check text-gold-accent me-2"></i><strong>Hardware:</strong> Solid antiqued alloy and reinforced steel rivets</li>
+                <li><i class="fa-solid fa-check text-gold-accent me-2"></i><strong>Origin:</strong> Individually crafted by master artisans in Egypt</li>
+                <li><i class="fa-solid fa-check text-gold-accent me-2"></i><strong>Warranty:</strong> Lifetime structural seam and hardware guarantee</li>
+              </ul>
+            </div>
+
+            <!-- Purchasing Control: Quantity Stepper & Add to Bag -->
+            <div class="purchasing-actions mb-4">
+              <div class="d-flex align-items-center gap-3">
+                
+                <!-- Quantity Input Stepper -->
+                <div class="luxury-stepper py-2 px-2" style="min-width: 140px;">
+                  <button 
+                    type="button" 
+                    class="luxury-stepper-btn" 
+                    (click)="quantity = (quantity > 1 ? quantity - 1 : 1)" 
+                    [disabled]="product.stock === 0 || quantity <= 1">
+                    &minus;
+                  </button>
+                  <span class="luxury-stepper-count fs-6 px-3">
+                    {{ quantity }}
+                  </span>
+                  <button 
+                    type="button" 
+                    class="luxury-stepper-btn" 
+                    (click)="quantity = (quantity < product.stock ? quantity + 1 : quantity)" 
+                    [disabled]="product.stock === 0 || quantity >= product.stock">
+                    &#43;
+                  </button>
+                </div>
+
+                <!-- Primary CTA Button -->
+                <button 
+                  type="button" 
+                  class="btn-luxury-dark py-3 px-5 flex-grow-1"
+                  [disabled]="product.stock === 0 || adding"
+                  (click)="addToCart()">
+                  @if(adding){
+                    <span class="spinner-border spinner-border-sm me-2"></span> Adding to Bag...
+                  } @else if(addedSuccess){
+                    <i class="fa-solid fa-check me-2"></i> Added to Bag!
+                  } @else if(product.stock === 0){
+                    Sold Out
+                  } @else {
+                    <i class="fa-solid fa-bag-shopping me-2"></i> Add to Bag
+                  }
+                </button>
+
+              </div>
+
+              @if(quantity >= product.stock && product.stock > 0){
+                <div class="small text-danger mt-2">
+                  <i class="fa-solid fa-circle-exclamation me-1"></i> Maximum available inventory reached for this piece ({{ product.stock }} units).
+                </div>
+              }
+            </div>
+
+            <!-- Shipping Assurance Strip -->
+            <div class="delivery-assurance-box p-3">
+              <div class="d-flex align-items-center gap-3">
+                <i class="fa-solid fa-truck-fast text-dark fs-4"></i>
+                <div>
+                  <div class="fw-bold small text-dark">Complimentary White-Glove Dispatch</div>
+                  <div class="text-muted" style="font-size: 12px;">Delivered within 24-48 hours across Greater Cairo & Alexandria. Cash on Delivery available at your doorstep.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Related Creations Section -->
+      @if(relatedProducts.length > 0){
+        <section class="related-creations-section mt-5 pt-5 border-top">
+          <div class="text-center mb-5">
+            <div class="luxury-caption mb-2">Complementary Creations</div>
+            <h2 class="display-6 font-serif">You May Also Admire</h2>
+          </div>
+
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+            @for(rel of relatedProducts; track rel._id){
+              <div class="col">
+                <app-product-card [product]="rel"></app-product-card>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+    }
+
+  </div>
+</div>
