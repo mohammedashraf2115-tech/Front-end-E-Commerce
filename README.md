@@ -83,3 +83,4 @@ The compiled output will be generated in `dist/front-e-commerce`.
 
 ## 📄 License
 This project is open-source under the [MIT License](LICENSE).
+
